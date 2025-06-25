@@ -64,12 +64,8 @@ TSharedRef<SWidget> FModdingKitEditor::GetModManagerDropdown()
 			UE_LOG(LogTemp, Log, TEXT("Create Mod selected"));
 			if (ModCreator.IsValid())
 			{
+				UE_LOG(LogTemp, Log, TEXT("Mod creator is valid."));
 				ModCreator->OpenNewPluginWizard();
-				UE_LOG(LogTemp, Warning, TEXT("Mod creator is valid."));
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("Mod creator is invalid."));
 			}
 		}))
 	);

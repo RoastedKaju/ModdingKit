@@ -2,6 +2,7 @@
 
 #include "ModCreator.h"
 #include "IPluginBrowser.h"
+#include "ModCreatorWizard.h"
 
 #define LOCTEXT_NAMESPACE "ModCreator"
 
@@ -51,8 +52,7 @@ void FModCreator::UnregisterTabSpawner()
 TSharedRef<SDockTab> FModCreator::SpawnPluginTab(const FSpawnTabArgs& Args)
 {
 	check(IPluginBrowser::IsAvailable());
-	// TODO: Replace with your own wizard definition
-	return IPluginBrowser::Get().SpawnPluginCreatorTab(Args, nullptr);
+	return IPluginBrowser::Get().SpawnPluginCreatorTab(Args, MakeShared<FModCreatorWizard>());
 }
 
 #undef LOCTEXT_NAMESPACE
