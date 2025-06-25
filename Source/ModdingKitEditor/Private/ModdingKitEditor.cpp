@@ -1,4 +1,6 @@
 ﻿#include "ModdingKitEditor.h"
+
+#include "ModCreator.h"
 #include "ToolMenus.h"
 #include "ToolMenu.h"
 
@@ -17,8 +19,11 @@ void FModdingKitEditor::StartupModule()
 		UE_LOG(LogTemp, Log, TEXT("FSlateApplication is valid."));
 
 		OnToolsMenuStartupHandle = UToolMenus::RegisterStartupCallback(
-			FSimpleMulticastDelegate::FDelegate::CreateStatic(&AddModManagerButton));
+			FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FModdingKitEditor::AddModManagerButton));
 	}
+
+	// Create mod creator and packager
+	ModCreator = MakeShared<FModCreator>();
 }
 
 void FModdingKitEditor::ShutdownModule()
@@ -37,7 +42,7 @@ void FModdingKitEditor::AddModManagerButton()
 	FToolMenuEntry ModManagerEntry = FToolMenuEntry::InitComboButton(
 		"ModManagerDropdown",
 		FUIAction(),
-		FOnGetContent::CreateStatic(&GetModManagerDropdown),
+		FOnGetContent::CreateRaw(this, &FModdingKitEditor::GetModManagerDropdown),
 		LOCTEXT("ModManager_Label", "Mod Manager"),
 		LOCTEXT("ModManager_ToolTip", "Create or package mod"),
 		FSlateIcon(FAppStyle::GetAppStyleSetName(), "MainFrame.PackageProject"));
@@ -49,14 +54,23 @@ void FModdingKitEditor::AddModManagerButton()
 TSharedRef<SWidget> FModdingKitEditor::GetModManagerDropdown()
 {
 	FMenuBuilder MenuBuilder(true, nullptr);
-
+	
 	MenuBuilder.AddMenuEntry(
 		LOCTEXT("CreateMod", "Create Mod"),
 		LOCTEXT("CreateModTooltip", "Start creating a new mod"),
 		FSlateIcon(),
-		FUIAction(FExecuteAction::CreateLambda([]()
+		FUIAction(FExecuteAction::CreateLambda([this]()
 		{
 			UE_LOG(LogTemp, Log, TEXT("Create Mod selected"));
+			if (ModCreator.IsValid())
+			{
+				ModCreator->OpenNewPluginWizard();
+				UE_LOG(LogTemp, Warning, TEXT("Mod creator is valid."));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("Mod creator is invalid."));
+			}
 		}))
 	);
 
@@ -64,7 +78,7 @@ TSharedRef<SWidget> FModdingKitEditor::GetModManagerDropdown()
 		LOCTEXT("PackageMod", "Package Mod"),
 		LOCTEXT("PackageModTooltip", "Package the selected mod"),
 		FSlateIcon(),
-		FUIAction(FExecuteAction::CreateLambda([]()
+		FUIAction(FExecuteAction::CreateLambda([this]()
 		{
 			UE_LOG(LogTemp, Log, TEXT("Package Mod selected"));
 		}))
@@ -72,6 +86,5 @@ TSharedRef<SWidget> FModdingKitEditor::GetModManagerDropdown()
 
 	return MenuBuilder.MakeWidget();
 }
-
 
 #undef LOCTEXT_NAMESPACE

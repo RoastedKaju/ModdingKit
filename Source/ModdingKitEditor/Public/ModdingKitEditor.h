@@ -6,6 +6,8 @@
 #include "Modules/ModuleInterface.h"
 #include "Modules/ModuleManager.h"
 
+class FModCreator;
+
 class FModdingKitEditor: public IModuleInterface
 {
 public:
@@ -13,12 +15,13 @@ public:
 	virtual void ShutdownModule() override;
 
 protected:
-	static void AddModManagerButton();
+	void AddModManagerButton();
 
-	static TSharedRef<SWidget> GetModManagerDropdown();
+	TSharedRef<SWidget> GetModManagerDropdown();
 
 private:
 	FDelegateHandle OnToolsMenuStartupHandle;
 
+	TSharedPtr<FModCreator> ModCreator;
 
 };

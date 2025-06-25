@@ -15,7 +15,8 @@ public class ModdingKitEditor : ModuleRules
 					"Slate",
 					"SlateCore",
 					"UnrealEd",
-					"ToolMenus"
+					"ToolMenus", 
+					"PluginBrowser"
 				}
 			);
 	}
