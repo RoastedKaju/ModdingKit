@@ -12,12 +12,16 @@ public class ModdingKitEditor : ModuleRules
 					"Core",
 					"CoreUObject",
 					"Engine",
+					"InputCore",
 					"Slate",
 					"SlateCore",
 					"UnrealEd",
+					"EditorStyle",
 					"ToolMenus", 
 					"PluginBrowser",
-					"Projects"
+					"Projects",
+					"Json",
+					"JsonSerialization"
 				}
 			);
 	}

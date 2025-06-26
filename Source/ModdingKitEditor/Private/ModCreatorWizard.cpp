@@ -53,28 +53,24 @@ void FModCreatorWizard::FindTemplates()
 		// exclude template directories starting with two underscores (we consider those "disabled") and the base template, as we already added that one
 		if ((!TemplateDir.StartsWith("__")) && (!TemplateDir.Equals("BaseTemplate")))
 		{
-			TArray<FString> TemplateDetails;
 			FString TemplateName = FName::NameToDisplayString(TemplateDir, false);
 			FString TemplateDescription = TEXT("");
 			int32 TemplateSortPriority = 100;
 			TSharedPtr<FPluginTemplateDescription> TemplateDescShrPtr;
 			UE_LOG(LogTemp, Log, TEXT("Template details file path : %s"), *(TemplatesBaseDir / TemplateDir));
-			FString TemplateDetailsFilePath = FString::Printf(TEXT("%s/TemplateInfo.txt"), *(TemplatesBaseDir / TemplateDir));
+			FString TemplateDetailsFilePath = FString::Printf(TEXT("%s/Info.json"), *(TemplatesBaseDir / TemplateDir));
 
-			// see if we have a .TXT file supplying us with better details for the template
-			TemplateDetails.Empty();
-			FFileHelper::LoadFileToStringArray(TemplateDetails, *TemplateDetailsFilePath);
-			if (TemplateDetails.Num() >= 1)
+			FString JsonRaw;
+			if (FFileHelper::LoadFileToString(JsonRaw, *TemplateDetailsFilePath))
 			{
-				TemplateName = TemplateDetails[0];
-			}
-			if (TemplateDetails.Num() >= 2)
-			{
-				TemplateDescription = TemplateDetails[1];
-			}
-			if (TemplateDetails.Num() >= 3)
-			{
-				TemplateSortPriority = FCString::Atoi(*TemplateDetails[2]);
+				TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonRaw);
+				TSharedPtr<FJsonObject> JsonObject;
+				if (FJsonSerializer::Deserialize(Reader, JsonObject) && JsonObject.IsValid())
+				{
+					TemplateName = JsonObject->GetStringField(TEXT("Name"));
+					TemplateDescription = JsonObject->GetStringField(TEXT("Desc"));
+					TemplateSortPriority = JsonObject->GetNumberField(TEXT("Priority"));
+				}
 			}
 
 			FPluginTemplateDescription* TemplateDesc = new FPluginTemplateDescription(
