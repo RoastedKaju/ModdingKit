@@ -1,6 +1,7 @@
 ﻿#include "ModdingKitEditor.h"
 
 #include "ModCreator.h"
+#include "ModPackager.h"
 #include "ToolMenus.h"
 #include "ToolMenu.h"
 
@@ -24,6 +25,7 @@ void FModdingKitEditor::StartupModule()
 
 	// Create mod creator and packager
 	ModCreator = MakeShared<FModCreator>();
+	ModPackager = MakeShared<FModPackager>();
 }
 
 void FModdingKitEditor::ShutdownModule()
@@ -77,6 +79,11 @@ TSharedRef<SWidget> FModdingKitEditor::GetModManagerDropdown()
 		FUIAction(FExecuteAction::CreateLambda([this]()
 		{
 			UE_LOG(LogTemp, Log, TEXT("Package Mod selected"));
+			if (ModPackager.IsValid())
+			{
+				UE_LOG(LogTemp, Log, TEXT("Mod packager is valid."));
+				ModPackager->OpenNewPackageWindow();
+			}
 		}))
 	);
 

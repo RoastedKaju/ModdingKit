@@ -7,6 +7,7 @@
 #include "Modules/ModuleManager.h"
 
 class FModCreator;
+class FModPackager;
 
 class FModdingKitEditor: public IModuleInterface
 {
@@ -23,5 +24,6 @@ private:
 	FDelegateHandle OnToolsMenuStartupHandle;
 
 	TSharedPtr<FModCreator> ModCreator;
+	TSharedPtr<FModPackager> ModPackager;
 
 };
