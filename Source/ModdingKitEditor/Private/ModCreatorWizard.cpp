@@ -58,7 +58,8 @@ void FModCreatorWizard::FindTemplates()
 			FString TemplateDescription = TEXT("");
 			int32 TemplateSortPriority = 100;
 			TSharedPtr<FPluginTemplateDescription> TemplateDescShrPtr;
-			FString TemplateDetailsFilePath = FString::Printf(TEXT("%s.txt"), *(TemplatesBaseDir / TemplateDir));
+			UE_LOG(LogTemp, Log, TEXT("Template details file path : %s"), *(TemplatesBaseDir / TemplateDir));
+			FString TemplateDetailsFilePath = FString::Printf(TEXT("%s/TemplateInfo.txt"), *(TemplatesBaseDir / TemplateDir));
 
 			// see if we have a .TXT file supplying us with better details for the template
 			TemplateDetails.Empty();
