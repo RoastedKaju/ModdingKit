@@ -244,7 +244,7 @@ void FModCreatorWizard::PluginCreated(const FString& PluginName, bool bWasSucces
 		if (Plugin != nullptr)
 		{
 			FPluginDescriptor Desc = Plugin->GetDescriptor();
-			Desc.Category = "Game Mods";
+			Desc.Category = "UGC";
 			FText UpdateFailureText;
 			Plugin->UpdateDescriptor(Desc, UpdateFailureText);
 		}

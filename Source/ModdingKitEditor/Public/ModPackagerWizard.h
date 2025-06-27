@@ -5,6 +5,12 @@
 #include "CoreMinimal.h"
 #include "Widgets/SCompoundWidget.h"
 
+struct FModPluginInfo
+{
+	FString Name;
+	FString Description;
+	TSharedPtr<FSlateBrush> IconBrush;
+};
 
 class SModPackagerWindow : public SCompoundWidget
 {
@@ -15,11 +21,13 @@ public:
 	void Construct(const FArguments& args);
 
 private:
-	TArray<TSharedPtr<FString>> ModList;
-	TSharedPtr<SListView<TSharedPtr<FString>>> ListViewWidget;
+	TArray<TSharedPtr<FModPluginInfo>> ModList;
+	TSharedPtr<SListView<TSharedPtr<FModPluginInfo>>> ListViewWidget;
 
 private:
-	TSharedRef<ITableRow> OnGenerateRow(TSharedPtr<FString> Item, const TSharedRef<STableViewBase>& Owner);
+	TSharedRef<ITableRow> OnGenerateRow(TSharedPtr<FModPluginInfo> Item, const TSharedRef<STableViewBase>& Owner);
+
+	static TSharedPtr<FSlateBrush> LoadIconBrush(const FString& IconPath);
+
+	FReply OnPackageModButtonClicked();
 };
-
-
