@@ -9,6 +9,7 @@ struct FModPluginInfo
 {
 	FString Name;
 	FString Description;
+	FString DescriptorFilePath;
 	TSharedPtr<FSlateBrush> IconBrush;
 };
 
@@ -23,11 +24,13 @@ public:
 private:
 	TArray<TSharedPtr<FModPluginInfo>> ModList;
 	TSharedPtr<SListView<TSharedPtr<FModPluginInfo>>> ListViewWidget;
+	TSharedPtr<FModPluginInfo> SelectedModPluginInfo;
 
 private:
 	TSharedRef<ITableRow> OnGenerateRow(TSharedPtr<FModPluginInfo> Item, const TSharedRef<STableViewBase>& Owner);
-
+	void OnPluginSelectionChanged(TSharedPtr<FModPluginInfo> SelectedItem, ESelectInfo::Type SelectInfo);
 	static TSharedPtr<FSlateBrush> LoadIconBrush(const FString& IconPath);
 
 	FReply OnPackageModButtonClicked();
+	bool IsPackageButtonEnabled() const;
 };
