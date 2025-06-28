@@ -35,7 +35,8 @@ void SModPackagerWindow::Construct(const FArguments& args)
 					const TSharedPtr<FSlateBrush> Brush = LoadIconBrush(IconPath);
 
 					// Add the mod item to the list
-					ModList.Add(MakeShared<FModPluginInfo>(FModPluginInfo{Name, Description, DescriptorFilePath, Brush}));
+					ModList.Add(
+						MakeShared<FModPluginInfo>(FModPluginInfo{Name, Description, DescriptorFilePath, Brush}));
 				}
 			}
 		}
@@ -44,11 +45,13 @@ void SModPackagerWindow::Construct(const FArguments& args)
 	ChildSlot
 	[
 		SNew(SVerticalBox)
+		// Heading
 		+ SVerticalBox::Slot().AutoHeight().Padding(4).HAlign(HAlign_Left)
 		[
 			SNew(STextBlock)
 			.Text(FText::FromString("Select the mod you want to package."))
 		]
+		// Mods list
 		+ SVerticalBox::Slot().FillHeight(1).Padding(4)
 		[
 			SAssignNew(ListViewWidget, SListView<TSharedPtr<FModPluginInfo>>)
@@ -57,17 +60,37 @@ void SModPackagerWindow::Construct(const FArguments& args)
 			.OnGenerateRow(this, &SModPackagerWindow::OnGenerateRow)
 			.OnSelectionChanged(this, &SModPackagerWindow::OnPluginSelectionChanged)
 		]
-		+SVerticalBox::Slot()
+		// Footer
+		+ SVerticalBox::Slot()
 		.AutoHeight()
 		.Padding(4)
-		.HAlign(HAlign_Right)
 		[
-			SNew(SButton)
-			.Text(FText::FromString(TEXT("Package Selected Mod")))
-			.OnClicked(this, &SModPackagerWindow::OnPackageModButtonClicked)
-			.IsEnabled(this, &SModPackagerWindow::IsPackageButtonEnabled)
-			.ButtonStyle(FAppStyle::Get(), "PrimaryButton")
-			//.ButtonColorAndOpacity_Lambda([this](){ return SelectedModPluginInfo.IsValid() ? FAppStyle::Get().GetSlateColor("SelectionColor").GetSpecifiedColor() : FLinearColor::Gray; })
+			SNew(SHorizontalBox)
+			// Browse output path
+			+ SHorizontalBox::Slot().FillWidth(1)
+			[
+				SNew(SHorizontalBox)
+				+ SHorizontalBox::Slot()
+				[
+					SAssignNew(OutputPathTextBox, SEditableTextBox)
+					.Text(this, &SModPackagerWindow::GetOutputPathText)
+				]
+				+ SHorizontalBox::Slot().AutoWidth()
+				[
+					SNew(SButton)
+					.Text(FText::FromString("..."))
+					.OnClicked(this, &SModPackagerWindow::OnBrowseOutputPathClicked)
+				]
+			]
+			// Package button
+			+ SHorizontalBox::Slot().AutoWidth()
+			[
+				SNew(SButton)
+				.Text(FText::FromString(TEXT("Package Selected Mod")))
+				.OnClicked(this, &SModPackagerWindow::OnPackageModButtonClicked)
+				.IsEnabled(this, &SModPackagerWindow::IsPackageButtonEnabled)
+				.ButtonStyle(FAppStyle::Get(), "PrimaryButton")
+			]
 		]
 	];
 }
@@ -121,7 +144,8 @@ void SModPackagerWindow::OnPluginSelectionChanged(TSharedPtr<FModPluginInfo> Sel
 	if (SelectedItem.IsValid())
 	{
 		SelectedModPluginInfo = SelectedItem;
-		UE_LOG(LogTemp, Log, TEXT("Selected plugin: %s And Descriptor Path: %s"), *SelectedItem->Name, *SelectedItem->DescriptorFilePath);
+		UE_LOG(LogTemp, Log, TEXT("Selected plugin: %s And Descriptor Path: %s"), *SelectedItem->Name,
+		       *SelectedItem->DescriptorFilePath);
 	}
 	else
 	{
@@ -160,4 +184,15 @@ FReply SModPackagerWindow::OnPackageModButtonClicked()
 bool SModPackagerWindow::IsPackageButtonEnabled() const
 {
 	return SelectedModPluginInfo.IsValid();
+}
+
+FText SModPackagerWindow::GetOutputPathText() const
+{
+	return FText::FromString(OutputPath);
+}
+
+FReply SModPackagerWindow::OnBrowseOutputPathClicked()
+{
+	// Your packaging logic here
+	return FReply::Handled();
 }
