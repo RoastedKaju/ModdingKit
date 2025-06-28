@@ -5,6 +5,7 @@
 #include "Interfaces/IPluginManager.h"
 #include "Misc/FileHelper.h"
 #include "Serialization/JsonReader.h"
+#include "DesktopPlatformModule.h"
 
 void SModPackagerWindow::Construct(const FArguments& args)
 {
@@ -193,6 +194,30 @@ FText SModPackagerWindow::GetOutputPathText() const
 
 FReply SModPackagerWindow::OnBrowseOutputPathClicked()
 {
-	// Your packaging logic here
+	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
+	if (DesktopPlatform)
+	{
+		const void* ParentWindowHandle = FSlateApplication::Get().FindBestParentWindowHandleForDialogs(nullptr);
+
+		FString ChosenPath;
+		const bool bFolderSelected = DesktopPlatform->OpenDirectoryDialog(
+			ParentWindowHandle,
+			TEXT("Choose Output Folder"),
+			OutputPath,
+			ChosenPath
+		);
+
+		if (bFolderSelected)
+		{
+			OutputPath = ChosenPath;
+
+			// Force textbox update
+			if (OutputPathTextBox.IsValid())
+			{
+				OutputPathTextBox->SetText(FText::FromString(OutputPath));
+			}
+		}
+	}
+	
 	return FReply::Handled();
 }
