@@ -29,7 +29,7 @@ void FModPackager::RegisterTabSpawner()
 	ModPackagerName, FOnSpawnTab::CreateRaw(this, &FModPackager::SpawnDockTab));
 
 	// Set default size for this tab
-	FVector2D DefaultSize = FVector2D(400.0f, 800.0f);
+	FVector2D DefaultSize = FVector2D(600.0f, 800.0f);
 	FTabManager::RegisterDefaultTabWindowSize(ModPackagerName, DefaultSize);
 
 	Spawner.SetDisplayName(LOCTEXT("PackageModTabHeader", "Mod Packager"));
