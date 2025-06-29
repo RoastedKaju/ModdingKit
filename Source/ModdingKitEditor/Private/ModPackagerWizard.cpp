@@ -7,10 +7,14 @@
 #include "Serialization/JsonReader.h"
 #include "DesktopPlatformModule.h"
 
+#define LOCTEXT_NAMESPACE "ModPackagerWizard"
+
 void SModPackagerWindow::Construct(const FArguments& args)
 {
 	// Clear the mod list
 	ModList.Empty();
+
+	OutputPath = FPaths::ProjectDir();
 
 	// Get all enabled plugins
 	const TArray<TSharedRef<IPlugin>> Plugins = IPluginManager::Get().GetEnabledPlugins();
@@ -50,7 +54,7 @@ void SModPackagerWindow::Construct(const FArguments& args)
 		+ SVerticalBox::Slot().AutoHeight().Padding(4).HAlign(HAlign_Left)
 		[
 			SNew(STextBlock)
-			.Text(FText::FromString("Select the mod you want to package."))
+			.Text(LOCTEXT("ModPackagerWizard", "Select the mod you want to package."))
 		]
 		// Mods list
 		+ SVerticalBox::Slot().FillHeight(1).Padding(4)
@@ -80,7 +84,7 @@ void SModPackagerWindow::Construct(const FArguments& args)
 				+ SHorizontalBox::Slot().AutoWidth()
 				[
 					SNew(SButton)
-					.Text(FText::FromString("..."))
+					.Text(LOCTEXT("ModPackagerWizard", "..."))
 					.OnClicked(this, &SModPackagerWindow::OnBrowseOutputPathClicked)
 				]
 			]
@@ -88,7 +92,7 @@ void SModPackagerWindow::Construct(const FArguments& args)
 			+ SHorizontalBox::Slot().AutoWidth()
 			[
 				SNew(SButton)
-				.Text(FText::FromString(TEXT("Package Selected Mod")))
+				.Text(LOCTEXT("ModPackagerWizard", "Package Selected Mod"))
 				.OnClicked(this, &SModPackagerWindow::OnPackageModButtonClicked)
 				.IsEnabled(this, &SModPackagerWindow::IsPackageButtonEnabled)
 				.ToolTipText(this, &SModPackagerWindow::GetPackageButtonTooltipText)
@@ -193,11 +197,11 @@ FText SModPackagerWindow::GetPackageButtonTooltipText() const
 {
 	if (!SelectedModPluginInfo.IsValid())
 	{
-		return FText::FromString(TEXT("Please select any mod to package."));
+		return LOCTEXT("ModPackagerWizard", "Please select any mod to package.");
 	}
 	else if (!IsOutputPathValid())
 	{
-		return FText::FromString(TEXT("The path is not valid."));
+		return LOCTEXT("ModPackagerWizard", "The path is not valid.");
 	}
 	return FText::GetEmpty(); // No tooltip when enabled
 }
@@ -217,7 +221,7 @@ FReply SModPackagerWindow::OnBrowseOutputPathClicked()
 		FString ChosenPath;
 		const bool bFolderSelected = DesktopPlatform->OpenDirectoryDialog(
 			ParentWindowHandle,
-			TEXT("Choose Output Folder"),
+			LOCTEXT("ModPackagerWizard", "Choose Output Folder").ToString(),
 			OutputPath,
 			ChosenPath
 		);
@@ -248,3 +252,5 @@ bool SModPackagerWindow::IsOutputPathValid() const
 	FString NormalizedPath = FPaths::ConvertRelativePathToFull(OutputPath);
 	return IFileManager::Get().DirectoryExists(*NormalizedPath);
 }
+
+#undef LOCTEXT_NAMESPACE
