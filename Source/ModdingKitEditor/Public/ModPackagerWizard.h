@@ -42,7 +42,9 @@ private:
 
 	FReply OnPackageModButtonClicked();
 	bool IsPackageButtonEnabled() const;
+	FText GetPackageButtonTooltipText() const;
 
 	FText GetOutputPathText() const;
 	FReply OnBrowseOutputPathClicked();
+	bool IsOutputPathValid() const;
 };

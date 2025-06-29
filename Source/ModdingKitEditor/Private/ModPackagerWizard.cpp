@@ -75,6 +75,7 @@ void SModPackagerWindow::Construct(const FArguments& args)
 				[
 					SAssignNew(OutputPathTextBox, SEditableTextBox)
 					.Text(this, &SModPackagerWindow::GetOutputPathText)
+					.OnTextCommitted_Lambda([this](const FText& NewText, ETextCommit::Type CommitType){ OutputPath = OutputPathTextBox.Get()->GetText().ToString();})
 				]
 				+ SHorizontalBox::Slot().AutoWidth()
 				[
@@ -90,6 +91,7 @@ void SModPackagerWindow::Construct(const FArguments& args)
 				.Text(FText::FromString(TEXT("Package Selected Mod")))
 				.OnClicked(this, &SModPackagerWindow::OnPackageModButtonClicked)
 				.IsEnabled(this, &SModPackagerWindow::IsPackageButtonEnabled)
+				.ToolTipText(this, &SModPackagerWindow::GetPackageButtonTooltipText)
 				.ButtonStyle(FAppStyle::Get(), "PrimaryButton")
 			]
 		]
@@ -184,7 +186,20 @@ FReply SModPackagerWindow::OnPackageModButtonClicked()
 
 bool SModPackagerWindow::IsPackageButtonEnabled() const
 {
-	return SelectedModPluginInfo.IsValid();
+	return SelectedModPluginInfo.IsValid() && IsOutputPathValid();
+}
+
+FText SModPackagerWindow::GetPackageButtonTooltipText() const
+{
+	if (!SelectedModPluginInfo.IsValid())
+	{
+		return FText::FromString(TEXT("Please select any mod to package."));
+	}
+	else if (!IsOutputPathValid())
+	{
+		return FText::FromString(TEXT("The path is not valid."));
+	}
+	return FText::GetEmpty(); // No tooltip when enabled
 }
 
 FText SModPackagerWindow::GetOutputPathText() const
@@ -220,4 +235,16 @@ FReply SModPackagerWindow::OnBrowseOutputPathClicked()
 	}
 	
 	return FReply::Handled();
+}
+
+bool SModPackagerWindow::IsOutputPathValid() const
+{
+	if (OutputPath.IsEmpty())
+	{
+		return false;
+	}
+
+	// Normalize and check directory
+	FString NormalizedPath = FPaths::ConvertRelativePathToFull(OutputPath);
+	return IFileManager::Get().DirectoryExists(*NormalizedPath);
 }
