@@ -6,6 +6,7 @@
 #include "Misc/FileHelper.h"
 #include "Serialization/JsonReader.h"
 #include "DesktopPlatformModule.h"
+#include "ModCookingUtils.h"
 
 #define LOCTEXT_NAMESPACE "ModPackagerWizard"
 
@@ -185,6 +186,7 @@ TSharedPtr<FSlateBrush> SModPackagerWindow::LoadIconBrush(const FString& IconPat
 FReply SModPackagerWindow::OnPackageModButtonClicked()
 {
 	// Your packaging logic here
+	FModCookingUtils::OpenDialogBox();
 	return FReply::Handled();
 }
 
