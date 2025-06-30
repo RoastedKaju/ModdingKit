@@ -32,7 +32,8 @@ void SModPackagerWindow::Construct(const FArguments& args)
 			if (FJsonSerializer::Deserialize(Reader, JsonObject) && JsonObject.IsValid())
 			{
 				FString PluginType;
-				if (JsonObject->TryGetStringField(TEXT("Category"), PluginType) && PluginType == TEXT("UGC"))
+				// if (JsonObject->TryGetStringField(TEXT("Category"), PluginType) && PluginType == TEXT("UGC"))
+				if (Plugin->GetType() == EPluginType::Mod)
 				{
 					UE_LOG(LogTemp, Log, TEXT("Enabled Mod Discovered: %s"), *Plugin->GetName());
 					const FString Name = Plugin->GetName();
