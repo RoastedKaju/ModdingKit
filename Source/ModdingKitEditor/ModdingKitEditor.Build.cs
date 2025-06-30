@@ -21,7 +21,8 @@ public class ModdingKitEditor : ModuleRules
 					"PluginBrowser",
 					"Projects",
 					"Json",
-					"JsonSerialization"
+					"JsonSerialization",
+					"UATHelper"
 				}
 			);
 	}
