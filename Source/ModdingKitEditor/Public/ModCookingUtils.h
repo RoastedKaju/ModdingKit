@@ -34,4 +34,6 @@ protected:
 	static bool IsShareMaterialShaderCodeEnabled();
 	static void SetShareMaterialShaderCodeEnabled(bool bEnabled);
 	static void FindAvailablePlugins(TArray<TSharedRef<IPlugin>>& OutAvailableGameMods);
+	/** Gets the project path (full path with the .uproject extension). */
+	static FString GetProjectPath();
 };

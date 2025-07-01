@@ -22,7 +22,8 @@ public class ModdingKitEditor : ModuleRules
 					"Projects",
 					"Json",
 					"JsonSerialization",
-					"UATHelper"
+					"UATHelper",
+					"DeveloperToolSettings"
 				}
 			);
 	}
